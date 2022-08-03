@@ -48,6 +48,21 @@ local function find_range_from_2nodes(nodeA, nodeB) --{{{
 	return true_range
 end --}}}
 
+function M.update_selection(buf, node, selection_mode) -- rip from the old ts_utils{{{
+	selection_mode = selection_mode or "charwise"
+	local start_row, start_col, end_row, end_col = ts_utils.get_vim_range({ ts_utils.get_node_range(node) }, buf)
+
+	vim.fn.setpos(".", { buf, start_row, start_col, 0 })
+
+	-- Start visual selection in appropriate mode
+	local v_table = { charwise = "v", linewise = "V", blockwise = "<C-v>" }
+	---- Call to `nvim_replace_termcodes()` is needed for sending appropriate
+	---- command to enter blockwise mode
+	local mode_string = vim.api.nvim_replace_termcodes(v_table[selection_mode] or selection_mode, true, true, true)
+	vim.cmd("normal! " .. mode_string)
+	vim.fn.setpos(".", { buf, end_row, end_col, 0 })
+end --}}}
+
 M.surf = function(direction, mode, move) --{{{
 	local node = ts_utils.get_node_at_cursor() -- declare node and bufnr
 	local bufnr = vim.api.nvim_get_current_buf()
@@ -127,13 +142,13 @@ M.surf = function(direction, mode, move) --{{{
 
 			if mode == "visual" then
 				target = ts_utils.get_node_at_cursor()
-				ts_utils.update_selection(bufnr, target)
-				ts_utils.update_selection(bufnr, target)
+				M.update_selection(bufnr, target)
+				M.update_selection(bufnr, target)
 			end
 		else
-			ts_utils.update_selection(bufnr, target) --> make the selection
+			M.update_selection(bufnr, target) --> make the selection
 			if mode == "visual" then
-				ts_utils.update_selection(bufnr, target)
+				M.update_selection(bufnr, target)
 			end
 		end
 	end
@@ -144,7 +159,7 @@ M.select_current_node = function() --{{{
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	if node ~= nil then
-		ts_utils.update_selection(bufnr, node)
+		M.update_selection(bufnr, node)
 	end
 end --}}}
 
@@ -185,7 +200,7 @@ M.select = function() --{{{
 	local node = get_master_node()
 	local bufnr = vim.api.nvim_get_current_buf()
 
-	ts_utils.update_selection(bufnr, node)
+	M.update_selection(bufnr, node)
 end --}}}
 
 M.move = function(mode, up) --{{{
@@ -216,8 +231,8 @@ M.move = function(mode, up) --{{{
 
 		if mode == "v" then
 			target = ts_utils.get_node_at_cursor()
-			ts_utils.update_selection(bufnr, target)
-			ts_utils.update_selection(bufnr, target)
+			M.update_selection(bufnr, target)
+			M.update_selection(bufnr, target)
 		end
 	end
 end --}}}
