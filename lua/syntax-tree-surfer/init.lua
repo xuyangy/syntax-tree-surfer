@@ -425,11 +425,16 @@ end --}}}
 
 local function get_nodes_in_array() --{{{
 	local ts = vim.treesitter
-	local parser = ts.get_parser(0)
+	local current_buffer = vim.api.nvim_get_current_buf()
+
+	local ok, parser = pcall(ts.get_parser, 0)
+	if not ok and vim.bo[current_buffer].ft == "typescriptreact" then
+		parser = ts.get_parser(0, "tsx")
+	end
+
 	local trees = parser:parse()
 	local root = trees[1]:root()
 
-	local current_buffer = vim.api.nvim_get_current_buf()
 	local nodes = {}
 
 	recursive_child_iter(root, nodes)
