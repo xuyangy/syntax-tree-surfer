@@ -427,9 +427,31 @@ local function get_nodes_in_array() --{{{
 	local ts = vim.treesitter
 	local current_buffer = vim.api.nvim_get_current_buf()
 
+	-- Yanked from https://github.com/nvim-treesitter/nvim-treesitter/blob/32e364ea3c99aafcce2ce735fe091618f623d889/lua/nvim-treesitter/parsers.lua#L4-L21
+	local filetype_to_parsername = {
+		arduino = "cpp",
+		javascriptreact = "javascript",
+		ecma = "javascript",
+		jsx = "javascript",
+		PKGBUILD = "bash",
+		html_tags = "html",
+		typescriptreact = "tsx",
+		["typescript.tsx"] = "tsx",
+		terraform = "hcl",
+		["html.handlebars"] = "glimmer",
+		systemverilog = "verilog",
+		cls = "latex",
+		sty = "latex",
+		OpenFOAM = "foam",
+		pandoc = "markdown",
+		rmd = "markdown",
+		cs = "c_sharp",
+	}
+
 	local ok, parser = pcall(ts.get_parser, 0)
-	if not ok and vim.bo[current_buffer].ft == "typescriptreact" then
-		parser = ts.get_parser(0, "tsx")
+	if not ok then
+		local cur_buf_filetype = vim.bo[current_buffer].ft
+		parser = ts.get_parser(0, filetype_to_parsername[cur_buf_filetype])
 	end
 
 	local trees = parser:parse()
