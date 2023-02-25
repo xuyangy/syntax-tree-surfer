@@ -50,7 +50,7 @@ end --}}}
 
 function M.update_selection(buf, node, selection_mode) -- rip from the old ts_utils{{{
 	selection_mode = selection_mode or "charwise"
-	local start_row, start_col, end_row, end_col = ts_utils.get_vim_range({ ts_utils.get_node_range(node) }, buf)
+	local start_row, start_col, end_row, end_col = ts_utils.get_vim_range({ vim.treesitter.get_node_range(node) }, buf)
 
 	vim.fn.setpos(".", { buf, start_row, start_col, 0 })
 
