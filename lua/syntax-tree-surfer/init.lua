@@ -874,7 +874,7 @@ M.hold_focused_node = function() --{{{
 
 	if new_node ~= nil then
         held_node = { node = new_node, buffer = bufnr }
-		print('held node')
+		print('held node at line ' .. new_node:start() + 1) -- node is zero based, lines start at 1
 	end
 end --}}}
 
@@ -884,8 +884,8 @@ end, {})
 
 vim.api.nvim_create_user_command("STSSwapFocusedWithHeld", function()
 	local bufnr = vim.api.nvim_get_current_buf()
-	if  bufnr ~= nil then
-		ts_utils.swap_nodes(ts_utils.get_node_at_cursor(), held_node.node, bufnr, true)
+	if  held_node.buffer == bufnr ~= nil then
+		ts_utils.swap_nodes(held_node.node, ts_utils.get_node_at_cursor(), bufnr, true)
 	end
 end, {})
 
