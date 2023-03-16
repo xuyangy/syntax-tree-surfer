@@ -864,6 +864,30 @@ vim.api.nvim_create_user_command("STSPrintNodesAtCursor", function()
 	print_nodes_at_cursor()
 end, {})
 
-return M
 
+-- Spider's patch to hold nodes
+
+held_node = nil
+M.hold_focused_node = function() --{{{
+	local new_node = ts_utils.get_node_at_cursor()
+	local bufnr = vim.api.nvim_get_current_buf()
+
+	if new_node ~= nil then
+        held_node = { node = new_node, buffer = bufnr }
+		print('held node')
+	end
+end --}}}
+
+vim.api.nvim_create_user_command("STSHoldFocusedNode", function()
+	M.hold_focused_node()
+end, {})
+
+vim.api.nvim_create_user_command("STSSwapFocusedWithHeld", function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	if  bufnr ~= nil then
+		ts_utils.swap_nodes(ts_utils.get_node_at_cursor(), held_node.node, bufnr, true)
+	end
+end, {})
+
+return M
 -- vim: foldmethod=marker foldmarker={{{,}}} foldlevel=0
