@@ -867,7 +867,7 @@ end, {})
 
 -- Spider's patch to hold nodes
 
-held_node = nil
+local held_node = nil
 M.hold_focused_node = function() --{{{
 	local new_node = ts_utils.get_node_at_cursor()
 	local bufnr = vim.api.nvim_get_current_buf()
