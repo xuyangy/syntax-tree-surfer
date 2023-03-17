@@ -864,30 +864,49 @@ vim.api.nvim_create_user_command("STSPrintNodesAtCursor", function()
 	print_nodes_at_cursor()
 end, {})
 
+-- version 2.2
 
--- Spider's patch to hold nodes
-
-local held_node = nil
-M.hold_focused_node = function() --{{{
+local held_node = nil --store the held node internally
+local function hold_focused_node() --{{{
 	local new_node = ts_utils.get_node_at_cursor()
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	if new_node ~= nil then
-        held_node = { node = new_node, buffer = bufnr }
-		print('held node at line ' .. new_node:start() + 1) -- node is zero based, lines start at 1
+        local end_row, end_col = new_node:end_()
+
+        -- store the held node with extra data for checks/extmark deletion
+        held_node = {
+            node = new_node,
+            bufnr = bufnr,
+            extmark_id = set_extmark_then_delete_it( -- set the extmark and save it for deletion
+                end_row,
+                end_col,
+                " held node",
+                M.opts.highlight_group,
+                8000
+            )
+        }
+        -- print('held node at line ' .. new_node:start() + 1) -- node is zero based, lines start at 1
+	end
+end --}}}
+
+local function swap_held_and_focused_node() --{{{
+	local bufnr = vim.api.nvim_get_current_buf()
+
+	if  held_node.bufnr == bufnr ~= nil then -- make sure we're swapping nodes in the same buffer
+		ts_utils.swap_nodes(held_node.node, ts_utils.get_node_at_cursor(), bufnr, true)
+        api.nvim_buf_del_extmark(0, ns, held_node.extmark_id) --clear the extmark, probably don't need it after this
 	end
 end --}}}
 
 vim.api.nvim_create_user_command("STSHoldFocusedNode", function()
-	M.hold_focused_node()
+	hold_focused_node()
 end, {})
 
-vim.api.nvim_create_user_command("STSSwapFocusedWithHeld", function()
-	local bufnr = vim.api.nvim_get_current_buf()
-	if  held_node.buffer == bufnr ~= nil then
-		ts_utils.swap_nodes(held_node.node, ts_utils.get_node_at_cursor(), bufnr, true)
-	end
+vim.api.nvim_create_user_command("STSSwapHeldAndFocusedNodes", function()
+    swap_held_and_focused_node()
 end, {})
 
 return M
+
 -- vim: foldmethod=marker foldmarker={{{,}}} foldlevel=0
