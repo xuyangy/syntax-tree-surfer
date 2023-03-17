@@ -875,7 +875,7 @@ local function hold_focused_node() --{{{
         local end_row, end_col = new_node:end_()
 
         --clear old extmark
-        if held_node.extmark_id then
+        if held_node and held_node.extmark_id then
             api.nvim_buf_del_extmark(0, ns, held_node.extmark_id)
         end
 
@@ -897,7 +897,7 @@ end --}}}
 local function swap_held_and_focused_node() --{{{
 	local bufnr = vim.api.nvim_get_current_buf()
 
-	if  held_node.bufnr == bufnr ~= nil then -- make sure we're swapping nodes in the same buffer
+	if  held_node ~= nil and held_node.bufnr == bufnr then -- make sure we're swapping nodes in the same buffer
 		ts_utils.swap_nodes(held_node.node, ts_utils.get_node_at_cursor(), bufnr, true)
         api.nvim_buf_del_extmark(0, ns, held_node.extmark_id) --clear the extmark, probably don't need it after this
 	end
