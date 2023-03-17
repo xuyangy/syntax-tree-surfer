@@ -258,7 +258,7 @@ require("syntax-tree-surfer").setup({
 # Version 2.2 Update
 
 ### Hold and swap nodes
-// TODO: video demonstration //
+https://user-images.githubusercontent.com/8104435/225992362-4e82d677-2ff5-463a-a910-6a6bdbf4fc9c.mp4
 
 This feature allows marking a node and then it with another node.
 
