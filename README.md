@@ -10,6 +10,7 @@
 1. [How do I install?](#how-do-i-install)
 1. [Version 1.1 Update](#version-11-update)
 1. [Version 2.0 Beta Update](#version-20-beta-update-)
+1. [Version 2.2 Update](#version-22-update-)
 
 # Version 1.0 Functionalities
 
@@ -252,3 +253,19 @@ require("syntax-tree-surfer").setup({
 ### Because every languages have different schemas and node-types, you can check the node-types that you're interested in with https://github.com/nvim-treesitter/playground
 
 #### You can also do a quick check using the command :STSPrintNodesAtCursor
+
+
+# Version 2.2 Update
+
+### Hold and swap node
+// TODO: video demonstration //
+
+Example mappings for Version 2.2 functionalities:
+
+```lua
+-- Hold a node for swapping
+vim.keymap.set("n", "gt", ":STSHoldFocusedNode<CR>", opts)
+
+-- swap current node with held
+vim.keymap.set("n", "gT", ":STSSwapHeldAndFocusedNodes<CR>", opts)
+```
