@@ -874,6 +874,11 @@ local function hold_focused_node() --{{{
 	if new_node ~= nil then
         local end_row, end_col = new_node:end_()
 
+        --clear old extmark
+        if held_node.extmark_id then
+            api.nvim_buf_del_extmark(0, ns, held_node.extmark_id)
+        end
+
         -- store the held node with extra data for checks/extmark deletion
         held_node = {
             node = new_node,
@@ -886,7 +891,6 @@ local function hold_focused_node() --{{{
                 8000
             )
         }
-        -- print('held node at line ' .. new_node:start() + 1) -- node is zero based, lines start at 1
 	end
 end --}}}
 
