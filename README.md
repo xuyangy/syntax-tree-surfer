@@ -257,8 +257,10 @@ require("syntax-tree-surfer").setup({
 
 # Version 2.2 Update
 
-### Hold and swap node
+### Hold and swap nodes
 // TODO: video demonstration //
+
+This feature allows marking a node and then it with another node.
 
 Example mappings for Version 2.2 functionalities:
 
