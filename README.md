@@ -264,8 +264,8 @@ Example mappings for Version 2.2 functionalities:
 
 ```lua
 -- Hold a node for swapping
-vim.keymap.set("n", "gnh", ":STSHoldFocusedNode<CR>", opts)
+vim.keymap.set("n", "gnh", "<cmd>STSHoldFocusedNode<cr>", opts)
 
 -- swap current node with held
-vim.keymap.set("n", "gns", ":STSSwapHeldAndFocusedNodes<CR>", opts)
+vim.keymap.set("n", "gns", "<cmd>STSSwapHeldAndFocusedNodes<cr>", opts)
 ```
