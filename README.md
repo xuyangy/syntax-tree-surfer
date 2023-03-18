@@ -262,15 +262,9 @@ https://user-images.githubusercontent.com/8104435/225992362-4e82d677-2ff5-463a-a
 
 This feature allows marking a node and then swapping it with another node.
 
-Example mappings for Version 2.2 functionalities:
+Example mapping:
 
 ```lua
--- Hold a node for swapping
-vim.keymap.set("n", "gnh", "<cmd>STSHoldFocusedNode<cr>", opts)
-
--- Swap current node with held
-vim.keymap.set("n", "gns", "<cmd>STSSwapHeldAndFocusedNodes<cr>", opts)
-
--- Alternatively, use a single binding for both:
+-- Holds a node, or swaps the held node
 vim.keymap.set("n", "gnh", "<cmd>STSSwapOrHold<cr>", opts)
 ```

@@ -918,14 +918,6 @@ local function hold_or_swap() --{{{
     end
 end --}}}
 
-vim.api.nvim_create_user_command("STSHoldFocusedNode", function()
-	hold_focused_node()
-end, {})
-
-vim.api.nvim_create_user_command("STSSwapHeldAndFocusedNodes", function()
-    swap_held_and_focused_node()
-end, {})
-
 vim.api.nvim_create_user_command("STSSwapOrHold", function()
     hold_or_swap()
 end, {})
