@@ -70,36 +70,36 @@ local get_visual_node = function() --{{{
 		return
 	end
 
-    local nodeA = node
-    vim.cmd("normal! o")
-    local nodeB = ts_utils.get_node_at_cursor()
-    vim.cmd("normal! o")
-    local root = ts_utils.get_root_for_node(node)
+	local nodeA = node
+	vim.cmd("normal! o")
+	local nodeB = ts_utils.get_node_at_cursor()
+	vim.cmd("normal! o")
+	local root = ts_utils.get_root_for_node(node)
 
-    if nodeA:id() ~= nodeB:id() then --> get the true node
-        local true_range = find_range_from_2nodes(nodeA, nodeB)
-        local parent = nodeA:parent()
-        local start_row_P, start_col_P, end_row_P, end_col_P = parent:range()
+	if nodeA:id() ~= nodeB:id() then --> get the true node
+		local true_range = find_range_from_2nodes(nodeA, nodeB)
+		local parent = nodeA:parent()
+		local start_row_P, start_col_P, end_row_P, end_col_P = parent:range()
 
-        while
-            start_row_P ~= true_range[1]
-            or start_col_P ~= true_range[2]
-            or end_row_P ~= true_range[3]
-            or end_col_P ~= true_range[4]
-        do
-            if parent:parent() == nil then
-                break
-            end
-            parent = parent:parent()
-            start_row_P, start_col_P, end_row_P, end_col_P = parent:range()
-        end
+		while
+			start_row_P ~= true_range[1]
+			or start_col_P ~= true_range[2]
+			or end_row_P ~= true_range[3]
+			or end_col_P ~= true_range[4]
+		do
+			if parent:parent() == nil then
+				break
+			end
+			parent = parent:parent()
+			start_row_P, start_col_P, end_row_P, end_col_P = parent:range()
+		end
 
-        node = parent
-    end
+		node = parent
+	end
 
-    if node == root then -- catch some edge cases
-        node = nodeA
-    end
+	if node == root then -- catch some edge cases
+		node = nodeA
+	end
 
 	local parent = node:parent() --> if parent only has 1 child, move up the tree
 	while parent ~= nil and parent:named_child_count() == 1 do
@@ -107,8 +107,7 @@ local get_visual_node = function() --{{{
 		parent = node:parent()
 	end
 
-    return node
-
+	return node
 end --}}}
 
 M.surf = function(direction, mode, move) --{{{
@@ -119,7 +118,7 @@ M.surf = function(direction, mode, move) --{{{
 		return
 	end
 
-	if mode == "visual" then-- {{{
+	if mode == "visual" then -- {{{
 		node = get_visual_node()
 	else
 		local parent = node:parent()
@@ -128,7 +127,6 @@ M.surf = function(direction, mode, move) --{{{
 			parent = node:parent()
 		end
 	end --}}}
-
 
 	local target --> setting the target, depending on the direction
 	if direction == "parent" then
@@ -886,72 +884,72 @@ end, {})
 
 -- version 2.2
 
-
 local held_node = nil --store the held node internally
 local function hold_node(node) --{{{
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	if node ~= nil then
-        local end_row, end_col = node:end_()
+		local end_row, end_col = node:end_()
 
-        --clear old extmark
-        if held_node and held_node.extmark_id then
-            -- api.nvim_buf_del_extmark(0, ns, held_node.extmark_id)
-        end
+		--clear old extmark
+		if held_node and held_node.extmark_id then
+			-- api.nvim_buf_del_extmark(0, ns, held_node.extmark_id)
+		end
 
-        -- store the held node with extra data for checks/extmark deletion
-        held_node = {
-            node = node,
-            bufnr = bufnr,
-            extmark_id = set_extmark_then_delete_it( -- set the extmark and save it for deletion
-                end_row,
-                end_col,
-                " held node",
-                M.opts.highlight_group,
-                8000
-            )
-        }
+		-- store the held node with extra data for checks/extmark deletion
+		held_node = {
+			node = node,
+			bufnr = bufnr,
+			extmark_id = set_extmark_then_delete_it( -- set the extmark and save it for deletion
+				end_row,
+				end_col,
+				" held node",
+				M.opts.highlight_group,
+				8000
+			),
+		}
 	end
 end --}}}
 
 local function swap_held_node(node) --{{{
 	local bufnr = vim.api.nvim_get_current_buf()
 
-	if  held_node ~= nil and held_node.bufnr == bufnr then -- make sure we're swapping nodes in the same buffer
+	if held_node ~= nil and held_node.bufnr == bufnr then -- make sure we're swapping nodes in the same buffer
 		ts_utils.swap_nodes(held_node.node, node, bufnr, true)
-        api.nvim_buf_del_extmark(0, ns, held_node.extmark_id) --clear the extmark, probably don't need it after this
-        held_node = nil
-    else
-        if held_node == nil then -- print out the reason for error
-            print("No held node!")
-        else
-            print("Incorrect buffer!")
-        end
+		api.nvim_buf_del_extmark(0, ns, held_node.extmark_id) --clear the extmark, probably don't need it after this
+		held_node = nil
+	else
+		if held_node == nil then -- print out the reason for error
+			print("No held node!")
+		else
+			print("Incorrect buffer!")
+		end
 	end
 end --}}}
 
 local function hold_or_swap(visual_mode) --{{{
-    if held_node == nil then
+	if held_node == nil then
 		if visual_mode then
 			hold_node(get_visual_node())
 		else
 			hold_node(ts_utils.get_node_at_cursor())
 		end
-    else
+	else
 		if visual_mode then
 			swap_held_node(get_visual_node())
 		else
 			swap_held_node(ts_utils.get_node_at_cursor())
 		end
-    end
+	end
 end --}}}
 
 vim.api.nvim_create_user_command("STSSwapOrHold", function()
-    hold_or_swap(false)
+	hold_or_swap(false)
 end, {})
 
 vim.api.nvim_create_user_command("STSSwapOrHoldVisual", function()
-    hold_or_swap(true)
+	hold_or_swap(true)
+	vim.cmd("norm! ")
 end, {})
 
 return M
