@@ -92,10 +92,6 @@ vim.keymap.set("x", "<A-j>", '<cmd>STSSwapNextVisual<cr>', opts)
 vim.keymap.set("x", "<A-k>", '<cmd>STSSwapPrevVisual<cr>', opts)
 ```
 
-# Special Thanks To:
-### Dr. David A. Kunz for creating [Let's create a Neovim plugin using Treesitter and Lua](https://www.youtube.com/watch?v=dPQfsASHNkg)
-### NVIM Treesitter Team - https://github.com/nvim-treesitter/nvim-treesitter
-
 # Now let's start Tree Surfing! 🌲💦
 
 ### Version 1.1 update
@@ -270,3 +266,9 @@ vim.keymap.set("n", "gnh", "<cmd>STSSwapOrHold<cr>", opts)
 -- Same for visual
 vim.keymap.set("x", "gnh", "<cmd>STSSwapOrHoldVisual<cr>", opts)
 ```
+
+# Special Thanks To:
+### Dr. David A. Kunz for creating [Let's create a Neovim plugin using Treesitter and Lua](https://www.youtube.com/watch?v=dPQfsASHNkg)
+### NVIM Treesitter Team - https://github.com/nvim-treesitter/nvim-treesitter
+### @lmburns for [#9](https://github.com/ziontee113/syntax-tree-surfer/pull/9)
+### @spiderforrest for [#14](https://github.com/ziontee113/syntax-tree-surfer/pull/14)
