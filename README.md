@@ -110,7 +110,7 @@ The .go_to_top_node_and_execute_commands() method takes 2 arguments:
 
 1. boolean: if false then it will jump to the beginning of the node, if true it jumps to the end.
 
-1. lua table: a table that contains strings, each tring is a vim command example: { "normal! O", "normal! O", "startinsert" }
+1. lua table: a table that contains strings, each string is a vim command example: { "normal! O", "normal! O", "startinsert" }
 
 ---
 
@@ -267,4 +267,6 @@ Example mapping:
 ```lua
 -- Holds a node, or swaps the held node
 vim.keymap.set("n", "gnh", "<cmd>STSSwapOrHold<cr>", opts)
+-- Same for visual
+vim.keymap.set("x", "gnh", "<cmd>STSSwapOrHoldVisual<cr>", opts)
 ```
