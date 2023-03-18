@@ -900,7 +900,22 @@ local function swap_held_and_focused_node() --{{{
 	if  held_node ~= nil and held_node.bufnr == bufnr then -- make sure we're swapping nodes in the same buffer
 		ts_utils.swap_nodes(held_node.node, ts_utils.get_node_at_cursor(), bufnr, true)
         api.nvim_buf_del_extmark(0, ns, held_node.extmark_id) --clear the extmark, probably don't need it after this
+        held_node = nil
+    else
+        if held_node == nil then -- print out the reason for error
+            print("No held node!")
+        else
+            print("Incorrect buffer!")
+        end
 	end
+end --}}}
+
+local function hold_or_swap() --{{{
+    if held_node == nil then
+        hold_focused_node()
+    else
+        swap_held_and_focused_node()
+    end
 end --}}}
 
 vim.api.nvim_create_user_command("STSHoldFocusedNode", function()
@@ -909,6 +924,10 @@ end, {})
 
 vim.api.nvim_create_user_command("STSSwapHeldAndFocusedNodes", function()
     swap_held_and_focused_node()
+end, {})
+
+vim.api.nvim_create_user_command("STSSwapOrHold", function()
+    hold_or_swap()
 end, {})
 
 return M

@@ -260,7 +260,7 @@ require("syntax-tree-surfer").setup({
 ### Hold and swap nodes
 https://user-images.githubusercontent.com/8104435/225992362-4e82d677-2ff5-463a-a910-6a6bdbf4fc9c.mp4
 
-This feature allows marking a node and then it with another node.
+This feature allows marking a node and then swapping it with another node.
 
 Example mappings for Version 2.2 functionalities:
 
@@ -268,6 +268,9 @@ Example mappings for Version 2.2 functionalities:
 -- Hold a node for swapping
 vim.keymap.set("n", "gnh", "<cmd>STSHoldFocusedNode<cr>", opts)
 
--- swap current node with held
+-- Swap current node with held
 vim.keymap.set("n", "gns", "<cmd>STSSwapHeldAndFocusedNodes<cr>", opts)
+
+-- Alternatively, use a single binding for both:
+vim.keymap.set("n", "gnh", "<cmd>STSSwapOrHold<cr>", opts)
 ```
