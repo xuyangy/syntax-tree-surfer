@@ -79,6 +79,14 @@ local get_visual_node = function() --{{{
 	if nodeA:id() ~= nodeB:id() then --> get the true node
 		local true_range = find_range_from_2nodes(nodeA, nodeB)
 		local parent = nodeA:parent()
+
+		if not parent then
+			return
+		end
+		if not parent.range then
+			return
+		end
+
 		local start_row_P, start_col_P, end_row_P, end_col_P = parent:range()
 
 		while
@@ -127,6 +135,10 @@ M.surf = function(direction, mode, move) --{{{
 			parent = node:parent()
 		end
 	end --}}}
+
+	if not node then
+		return
+	end
 
 	local target --> setting the target, depending on the direction
 	if direction == "parent" then
