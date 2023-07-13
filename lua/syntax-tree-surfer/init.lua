@@ -691,6 +691,14 @@ local function print_types(desired_types) -- {{{
 		end
 	end
 
+	local key_count = 0
+	for _, _ in pairs(hash_table) do
+		key_count = key_count + 1
+	end
+	if key_count == 0 then
+		return
+	end
+
 	vim.cmd([[redraw]])
 
 	local ok, keynum = pcall(vim.fn.getchar)
