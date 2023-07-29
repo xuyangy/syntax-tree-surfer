@@ -345,7 +345,6 @@ local function get_top_node() --{{{
 
 	local root = ts_utils.get_root_for_node(node)
 
-	local start_row = node:start()
 	local parent = node:parent()
 
 	while parent ~= nil and parent ~= root do
@@ -367,7 +366,11 @@ M.go_to_top_node_and_execute_commands = function(go_to_end, list_of_commands) --
 	-- I want to create a function at the top level
 	vim.schedule(function()
 		for _, command in ipairs(list_of_commands) do
-			vim.cmd(command)
+			if type(command) == "string" then
+				vim.cmd(command)
+			else
+				command()
+			end
 		end
 	end)
 end --}}}
@@ -596,6 +599,8 @@ end --}}}
 
 -- Functions to Execute --
 local function print_types(desired_types) -- {{{
+	vim.cmd("m'")
+
 	current_desired_types = desired_types
 
 	local nodes = get_nodes_in_array()
