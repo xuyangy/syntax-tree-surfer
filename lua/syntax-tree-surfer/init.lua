@@ -958,7 +958,7 @@ local function swap_held_node(node) --{{{
 	end
 end --}}}
 
-local function hold_or_swap(visual_mode) --{{{
+M.hold_or_swap = function(visual_mode) --{{{
 	if held_node == nil then
 		if visual_mode then
 			hold_node(get_visual_node())
@@ -974,12 +974,19 @@ local function hold_or_swap(visual_mode) --{{{
 	end
 end --}}}
 
+M.clear_held_node = function()
+  if held_node and held_node.extmark_id then
+    api.nvim_buf_del_extmark(0, ns, held_node.extmark_id)
+  end
+  held_node = nil
+end
+
 vim.api.nvim_create_user_command("STSSwapOrHold", function()
-	hold_or_swap(false)
+	M.hold_or_swap(false)
 end, {})
 
 vim.api.nvim_create_user_command("STSSwapOrHoldVisual", function()
-	hold_or_swap(true)
+	M.hold_or_swap(true)
 	vim.cmd("norm! ")
 end, {})
 

@@ -267,6 +267,13 @@ vim.keymap.set("n", "gnh", "<cmd>STSSwapOrHold<cr>", opts)
 vim.keymap.set("x", "gnh", "<cmd>STSSwapOrHoldVisual<cr>", opts)
 ```
 
+The lower-level functionality can be accessed via:
+```lua
+require("syntax-tree-surfer").hold_or_swap(true) -- param is_visual boolean
+require("syntax-tree-surfer").clear_held_node()
+```
+note that `STSSwapOrHoldVisual` will clear the visual selection, but `hold_or_swap(true)` will not.
+
 # Special Thanks To:
 ### Dr. David A. Kunz for creating [Let's create a Neovim plugin using Treesitter and Lua](https://www.youtube.com/watch?v=dPQfsASHNkg)
 ### NVIM Treesitter Team - https://github.com/nvim-treesitter/nvim-treesitter
