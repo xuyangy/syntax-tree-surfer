@@ -4,6 +4,12 @@ local ts_utils = require("nvim-treesitter.ts_utils")
 
 local M = {}
 
+local function get_node_at_cursor()
+  local r, c = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.treesitter.get_parser(0):parse({ r - 1, c, r - 1, c })
+  return vim.treesitter.get_node()
+end
+
 local function find_range_from_2nodes(nodeA, nodeB) --{{{
 	local start_row_A, start_col_A, end_row_A, end_col_A = nodeA:range()
 	local start_row_B, start_col_B, end_row_B, end_col_B = nodeB:range()
@@ -64,7 +70,7 @@ function M.update_selection(buf, node, selection_mode) -- rip from the old ts_ut
 end --}}}
 
 local get_visual_node = function() --{{{
-	local node = ts_utils.get_node_at_cursor() -- declare node and bufnr
+	local node = get_node_at_cursor() -- declare node and bufnr
 
 	if node == nil then -- prevent errors
 		return
@@ -72,7 +78,7 @@ local get_visual_node = function() --{{{
 
 	local nodeA = node
 	vim.cmd("normal! o")
-	local nodeB = ts_utils.get_node_at_cursor()
+	local nodeB = get_node_at_cursor()
 	vim.cmd("normal! o")
 	local root = ts_utils.get_root_for_node(node)
 
@@ -119,7 +125,7 @@ local get_visual_node = function() --{{{
 end --}}}
 
 M.surf = function(direction, mode, move) --{{{
-	local node = ts_utils.get_node_at_cursor() -- declare node and bufnr
+	local node = get_node_at_cursor() -- declare node and bufnr
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	if node == nil then -- prevent errors
@@ -171,7 +177,7 @@ M.surf = function(direction, mode, move) --{{{
 			ts_utils.swap_nodes(node, target, bufnr, true)
 
 			if mode == "visual" then
-				target = ts_utils.get_node_at_cursor()
+				target = get_node_at_cursor()
 				M.update_selection(bufnr, target)
 				M.update_selection(bufnr, target)
 			end
@@ -185,7 +191,7 @@ M.surf = function(direction, mode, move) --{{{
 end --}}}
 
 M.select_current_node = function() --{{{
-	local node = ts_utils.get_node_at_cursor()
+	local node = get_node_at_cursor()
 	local bufnr = vim.api.nvim_get_current_buf()
 
 	if node ~= nil then
@@ -196,14 +202,14 @@ end --}}}
 ---
 
 M.jump_to_current_node = function(start_or_end)
-	local node = ts_utils.get_node_at_cursor()
+	local node = get_node_at_cursor()
 	ts_utils.goto_node(node, start_or_end, true)
 end
 
 ---
 
 local function get_master_node(block_check) --{{{
-	local node = ts_utils.get_node_at_cursor()
+	local node = get_node_at_cursor()
 	if node == nil then
 		error("No Treesitter parser found")
 	end
@@ -260,7 +266,7 @@ M.move = function(mode, up) --{{{
 		ts_utils.swap_nodes(node, target, bufnr, true)
 
 		if mode == "v" then
-			target = ts_utils.get_node_at_cursor()
+			target = get_node_at_cursor()
 			M.update_selection(bufnr, target)
 			M.update_selection(bufnr, target)
 		end
@@ -338,7 +344,7 @@ end --}}}
 --- version 1.1
 
 local function get_top_node() --{{{
-	local node = ts_utils.get_node_at_cursor()
+	local node = get_node_at_cursor()
 	if node == nil then
 		error("No Treesitter parser found")
 	end
@@ -743,7 +749,7 @@ local function go_to_next_instance(desired_types, forward, opts) --{{{
 	if nodes then
 		-- filter the nodes based on the opts
 		if opts then
-			local current_node = ts_utils.get_node_at_cursor(current_window)
+			local current_node = get_node_at_cursor(current_window)
 
 			if opts.destination == "parent" then
 				nodes = get_parent_nodes(current_node, desired_types)
@@ -891,7 +897,7 @@ local function get_raw_parent_nodes(node) --{{{
 end --}}}
 
 local function print_nodes_at_cursor() --{{{
-	local current_node = ts_utils.get_node_at_cursor()
+	local current_node = get_node_at_cursor()
 
 	local parents = get_raw_parent_nodes(current_node)
 
@@ -957,13 +963,13 @@ M.hold_or_swap = function(visual_mode) --{{{
 		if visual_mode then
 			hold_node(get_visual_node())
 		else
-			hold_node(ts_utils.get_node_at_cursor())
+			hold_node(get_node_at_cursor())
 		end
 	else
 		if visual_mode then
 			swap_held_node(get_visual_node())
 		else
-			swap_held_node(ts_utils.get_node_at_cursor())
+			swap_held_node(get_node_at_cursor())
 		end
 	end
 end --}}}
